@@ -444,8 +444,7 @@ class Tree:
 		if tmp_transit.skew + corrective == 2: #было 1 стало 2
 			
 			tmp_transit.h_l_tree -= 1
-			if tmp_transit.h_l_tree + 1 == max(tmp_transit.right.h_r_tree, 
-												tmp_transit.right.h_l_tree):
+			if tmp_transit.h_l_tree + 1 == max(tmp_transit.right.h_r_tree, tmp_transit.right.h_l_tree):
 					#Условие для малого левого вращения
 					if tmp_transit.right.h_l_tree < tmp_transit.right.h_r_tree:
 						#Высота сокращается до корня!!!!
@@ -513,8 +512,7 @@ class Tree:
 		elif tmp_transit.skew + corrective == -2: #было -1 стало -2
 			
 			tmp_transit.h_r_tree -= 1
-			if tmp_transit.h_r_tree + 1 == max(tmp_transit.left.h_r_tree,
-												tmp_transit.left.h_l_tree):
+			if tmp_transit.h_r_tree + 1 == max(tmp_transit.left.h_r_tree, tmp_transit.left.h_l_tree):
 					#Условие для малого правого вращения
 					if tmp_transit.left.h_l_tree > tmp_transit.left.h_r_tree:
 						#Высота сокращается до корня!!!!
