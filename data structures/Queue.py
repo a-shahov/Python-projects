@@ -1,7 +1,7 @@
 class Queue:
 	"""
-	Очередь 
-	[<значение>, <следущий эл.>, <первый эл.>]
+	Queue on nested lists
+	[<value>, <next item>, <first element>]
 	
 	>>> A = Queue()
 	>>> A.add(1)
@@ -52,7 +52,7 @@ class Queue:
 		self.size += 1
 	
 	def pop(self):
-		assert self.size, "Очередь пуста"
+		assert self.size, "The queue is empty"
 		x = self._first[0]
 		self._first = self._first[1]
 		if self._first is not None:
