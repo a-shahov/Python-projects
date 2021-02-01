@@ -1,3 +1,3 @@
-# Всем привет!
-Выкладываю здесь всякие программы, которые я сам написал,
-и считаю что это что-то важное.
+# Hello everyone!!! 
+I post here all sorts of programs that I wrote myself,
+and I think this is something important.
