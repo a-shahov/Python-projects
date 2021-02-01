@@ -1,48 +1,50 @@
 class Node:
-	
+
 	def __init__(self, key, value):
 		
-		self.skew = 0
-		self.h_r_tree = 0
-		self.h_l_tree = 0
+		self.skew = 0 #main attribute for balancing
+		self.h_r_tree = 0 #height of the right subtree
+		self.h_l_tree = 0 #height of the left subtree
 		
 		self.key = key 
 		self.value = value
-		self.right = None
-		self.left = None
-		self.parent = None
+		self.right = None #link to the right child
+		self.left = None #link to the left child
+		self.parent = None #parent link
 
 class Tree:
 	"""
-	АВЛ - дерево
-	
-	push(key, value) - добавить ключ(key) со значение value,
-	value по умолчанию None
-	
-	find(key) - поиск по ключу, если есть возвращает True
-	иначе False
-	
-	delete(key) - удаляет элемент из дерева по ключу
-	
-	clear() - Делает дерево пустым
-	
-	is_empty() - Возвращает True если дерево пусто,
-	иначе False
-	
-	show() - Возвращает упорядоченный список ключей
-	
-	Атрибут size содержит размер дерева
+	AVL - tree
+
+	push(key, value) - add a key (key) with value (value),
+	value by default None
+
+	find(key) - search by key, if present returns True
+	otherwise False, can return a reference to the searched object, 
+	see documentation
+
+	delete(key) - deletes an element from the tree by key
+
+	clear() - Makes the tree empty
+
+	is_empty() - Returns True if the tree is empty,
+	otherwise False
+
+	show() - Returns an ordered list of keys, the tree becomes empty
+
+	The size attribute contains the size of the tree
 	"""
 	def __init__(self):
 		self.root = None
 		self.size = 0
 	
 
-	def small_left_rotation(self, tmp):
+	def __small_left_rotation(self, tmp):
 		"""
-		у tmp.parent происходит переполнение значения skew
+		gets a reference to an object tmp where
+		tmp.parent has a skew overflow
 		"""
-		#Переназначение ссылок
+		#Link reassignment
 		top = tmp.parent.parent
 		a = tmp.parent
 		b = tmp
@@ -63,18 +65,19 @@ class Tree:
 			b.left.parent = a
 		b.left = a
 		
-		#Перевычисление коэффициентов
+		#Recalculation of coefficients
 		a.h_r_tree = b.h_l_tree
 		b.h_l_tree = 1 + max(a.h_r_tree, a.h_l_tree)
 		a.skew = a.h_r_tree - a.h_l_tree
 		b.skew = b.h_r_tree - b.h_l_tree
 
 	
-	def big_left_rotation(self, tmp):
+	def __big_left_rotation(self, tmp):
 		"""
-		у tmp.parent происходит переполнение значения skew
+		gets a reference to an object tmp where
+		tmp.parent has a skew overflow
 		"""
-		#Переназначение ссылок
+		#Link reassignment
 		top = tmp.parent.parent
 		a = tmp.parent
 		b = tmp
@@ -101,7 +104,7 @@ class Tree:
 		c.left = a
 		c.right = b
 
-		#Перевычисление коэффициентов
+		#Recalculation of coefficients
 		a.h_r_tree = c.h_l_tree
 		b.h_l_tree = c.h_r_tree
 		c.h_l_tree = 1 + max(a.h_l_tree, a.h_r_tree)
@@ -111,11 +114,12 @@ class Tree:
 		c.skew = c.h_r_tree - c.h_l_tree
 	
 	
-	def small_right_rotation(self, tmp):
+	def __small_right_rotation(self, tmp):
 		"""
-		у tmp.parent происходит переполнение значения skew
+		gets a reference to an object tmp where
+		tmp.parent has a skew overflow
 		"""
-		#Переназначение ссылок
+		#Link reassignment
 		top = tmp.parent.parent
 		a = tmp.parent
 		b = tmp
@@ -136,18 +140,19 @@ class Tree:
 			b.right.parent = a
 		b.right = a
 		
-		#Перевычисление коэффициентов
+		#Recalculation of coefficients
 		a.h_l_tree = b.h_r_tree
 		b.h_r_tree = 1 + max(a.h_l_tree, a.h_r_tree)
 		a.skew = a.h_r_tree - a.h_l_tree
 		b.skew = b.h_r_tree - b.h_l_tree
 	
 
-	def big_right_rotation(self, tmp):
+	def __big_right_rotation(self, tmp):
 		"""
-		у tmp.parent происходит переполнение значения skew
+		gets a reference to an object tmp where
+		tmp.parent has a skew overflow
 		"""
-		#Переназначение ссылок
+		#Link reassignment
 		top = tmp.parent.parent
 		a = tmp.parent
 		b = tmp
@@ -174,7 +179,7 @@ class Tree:
 		c.right = a
 		c.left = b
 		
-		#Перевычисление коэффициентов
+		#Recalculation of coefficients
 		a.h_l_tree = c.h_r_tree
 		b.h_r_tree = c.h_l_tree
 		c.h_r_tree = 1 + max(a.h_l_tree, a.h_r_tree)
@@ -184,8 +189,14 @@ class Tree:
 		c.skew = c.h_r_tree - c.h_l_tree
 
 
-	def count_skew_push(self, tmp):
+	def __count_skew_push(self, tmp):
+		"""
+		This function recalculates the skew coefficient 
+		for all parents who need it. Runs every time push is called
 		
+		tmp - This is a link to the current object, 
+		recalculation is performed in tmp.parent
+		"""
 		if tmp.parent is None:
 			return
 		elif tmp.parent.right is tmp:
@@ -193,56 +204,60 @@ class Tree:
 		elif tmp.parent.left is tmp:
 			corrective = -1	
 		else:
-			raise Warning("Сбой алгоритма, недопустимое место в программе")
-		#допустимые значения для tmp.parent.skew -1, 0, 1
-		if tmp.parent.skew + corrective == 2: #было 1 стало 2
+			raise Warning("Algorithm failure, invalid program location")
+		#valid values for tmp.parent.skew are -1, 0, 1
+		if tmp.parent.skew + corrective == 2: #was 1 now 2
 			tmp.parent.h_r_tree += 1
 			if tmp.parent.h_l_tree + 1 == max(tmp.h_r_tree, tmp.h_l_tree):
-				#Условие для малого левого вращения
+				#Condition for small left rotation
 				if tmp.h_l_tree <= tmp.h_r_tree:
-					self.small_left_rotation(tmp)
-				#Условие для большого левого вращения
+					self.__small_left_rotation(tmp)
+				#Condition for big left rotation
 				elif tmp.h_l_tree > tmp.h_r_tree:
-					self.big_left_rotation(tmp)
+					self.__big_left_rotation(tmp)
 			else:
-				raise Warning("Сбой алгоритма, недопустимое место в программе")
+				raise Warning("Algorithm failure, invalid program location")
 			return
-		elif tmp.parent.skew + corrective == 1: #было 0 стало 1
+		elif tmp.parent.skew + corrective == 1: #was 0 now 1
 			tmp.parent.skew += corrective
 			tmp.parent.h_r_tree += 1
 			tmp = tmp.parent
-			self.count_skew_push(tmp)
+			self.__count_skew_push(tmp)
 			return
-		elif tmp.parent.skew + corrective == 0: 
+		elif tmp.parent.skew + corrective == 0: #was -1 or 1 now 0
 			tmp.parent.skew += corrective
 			if tmp.parent.right is tmp:
 				tmp.parent.h_r_tree += 1
 			else:
 				tmp.parent.h_l_tree += 1
 			return
-		elif tmp.parent.skew + corrective == -1: #было 0 стало -1
+		elif tmp.parent.skew + corrective == -1: #was 0 now -1
 			tmp.parent.skew += corrective
 			tmp.parent.h_l_tree += 1
 			tmp = tmp.parent
-			self.count_skew_push(tmp)
+			self.__count_skew_push(tmp)
 			return
-		elif tmp.parent.skew + corrective == -2: #было -1 стало -2
+		elif tmp.parent.skew + corrective == -2: #was -1 now -2
 			tmp.parent.h_l_tree += 1
 			if tmp.parent.h_r_tree + 1 == max(tmp.h_r_tree, tmp.h_l_tree):
-				#Условие для малого правого вращения
+				#Condition for small right rotation
 				if tmp.h_l_tree >= tmp.h_r_tree:
-					self.small_right_rotation(tmp)
-				#Условие для большого правого вращения
+					self.__small_right_rotation(tmp)
+				#Condition for big right rotation
 				elif tmp.h_l_tree < tmp.h_r_tree:
-					self.big_right_rotation(tmp)
+					self.__big_right_rotation(tmp)
 			else:
-				raise Warning("Сбой алгоритма, недопустимое место в программе")
+				raise Warning("Algorithm failure, invalid program location")
 			return
 		else:
-			raise Warning("Сбой алгоритма, недопустимое место в программе")
+			raise Warning("Algorithm failure, invalid program location")
 	
 	def push(self, key, value=None):
-		notice = "Элемент с таким ключом уже содержится в дереве"
+		"""
+		add a key (key) with value (value),
+		value by default None
+		"""
+		notice = "An element with such a key is already contained in the tree"
 		assert not self.find(key), notice
 		if self.root is None:
 			self.root = Node(key, value)
@@ -266,16 +281,16 @@ class Tree:
 						break
 					else:
 						tmp = tmp.left
-			self.count_skew_push(tmp)
+			self.__count_skew_push(tmp)
 		self.size += 1
 
 	
 	def find(self, key, from_the_inside=False):
 		"""
-		Если элемент есть в дереве:
-		может вернуть ссылку на искомый элемент,
-		если from_the_inside == True,
-		иначе возвращает True
+		If the item is in the tree:
+		can return a link to the element you are looking for,
+		if from_the_inside == True,
+		otherwise returns True
 		"""
 		if self.root is None:
 			return False
@@ -297,14 +312,16 @@ class Tree:
 
 
 	def clear(self):
+		"""
+		Resets all values in the tree
+		"""
 		self.root = None
 		self.size = 0
 
 	
-	def find_min(self, tmp):
+	def __find_min(self, tmp):
 		"""
-		tmp - ссылка на удаляемый элемент
-		Внутренняя функция не надо использовать с внешней стороны
+		tmp - link to the item to remove
 		"""
 		tmp = tmp.right
 		while True:
@@ -315,20 +332,20 @@ class Tree:
 
 	def delete(self, key):
 		"""
-		tmp - удаляемый элемент
+		deletes an element from the tree by key
 		"""
-		tmp = self.find(key, True)#Возвращает ссылку на искомый объект или False
+		tmp = self.find(key, True) #Returns a reference to the searched object or False
 		assert tmp is not False, "Такого элемента в дереве нету"
 		self.size -= 1
-		if tmp.right is None:#Нету правого поддерева
-			if tmp.left is None:#Удаляемый элемент(tmp) лист
-				""" Не нужно менять коэффициенты skew, h_r_tree, h_l_tree """
-				if tmp.parent is None:#Удалаемый элемент это корень size = 1
+		if tmp.right is None: #There is no right subtree
+			if tmp.left is None: #The element to remove (tmp) - sheet
+				#No need to change coefficients skew, h_r_tree, h_l_tree
+				if tmp.parent is None: #The removed item is the root, size = 1
 					self.clear()
-					tmp_transit = None#Для функции count_skew_delete
-					orientation = "None"
-					""" Нужно менять коэффициенты skew, h_r_tree, h_l_tree """
-				else:#У удаляемого элемента(tmp) есть родитель
+					tmp_transit = None #For function __count_skew_delete
+					orientation = "None" #For function __count_skew_delete
+				#It is necessary to change the coefficients skew, h_r_tree, h_l_tree
+				else: #The element to be removed (tmp) has a parent
 					"""
 					приходим слева то есть +1 к skew, у tmp.parent
 					"""
@@ -366,7 +383,7 @@ class Tree:
 					tmp.left.parent = tmp.parent
 					tmp_transit = tmp.parent
 		else:#У удаляемого элемента(tmp) есть правое поддерево
-			tmp_min = self.find_min(tmp)
+			tmp_min = self.__find_min(tmp)
 			if tmp_min.parent is tmp:
 				""" 
 				приходим справа то есть -1 к skew, в tmp_min(после переназначений)
@@ -423,10 +440,10 @@ class Tree:
 				tmp.left.parent = tmp_min
 				tmp_min.left = tmp.left
 		
-		self.count_skew_delete(tmp_transit, orientation)
+		self.__count_skew_delete(tmp_transit, orientation)
 
 
-	def count_skew_delete(self, tmp_transit, orientation):
+	def __count_skew_delete(self, tmp_transit, orientation):
 		"""
 		orientation - пришли справа "right", пришли слева "left", 
 		не надо менять коэффициенты "None"
@@ -444,45 +461,46 @@ class Tree:
 		if tmp_transit.skew + corrective == 2: #было 1 стало 2
 			
 			tmp_transit.h_l_tree -= 1
-			if tmp_transit.h_l_tree + 1 == max(tmp_transit.right.h_r_tree, tmp_transit.right.h_l_tree):
-					#Условие для малого левого вращения
-					if tmp_transit.right.h_l_tree < tmp_transit.right.h_r_tree:
-						#Высота сокращается до корня!!!!
-						#Нужно продолжать вызывать функцию
-						tmp_next = tmp_transit.parent
-						if tmp_transit.parent is not None:
-							if tmp_transit.parent.right is tmp_transit:
-								orientation = "right"
-							elif tmp_transit.parent.left is tmp_transit:
-								orientation = "left"
-						else:
-							orientation = "None"
+			if tmp_transit.h_l_tree + 1 == \
+					max(tmp_transit.right.h_r_tree, tmp_transit.right.h_l_tree):
+				#Условие для малого левого вращения
+				if tmp_transit.right.h_l_tree < tmp_transit.right.h_r_tree:
+					#Высота сокращается до корня!!!!
+					#Нужно продолжать вызывать функцию
+					tmp_next = tmp_transit.parent
+					if tmp_transit.parent is not None:
+						if tmp_transit.parent.right is tmp_transit:
+							orientation = "right"
+						elif tmp_transit.parent.left is tmp_transit:
+							orientation = "left"
+					else:
+						orientation = "None"
 						
-						self.small_left_rotation(tmp_transit.right)
+					self.__small_left_rotation(tmp_transit.right)
 						
-						#продолжаем вызывать функцию
-						self.count_skew_delete(tmp_next, orientation)
-					#Условие для большого левого вращения
-					elif tmp_transit.right.h_l_tree > tmp_transit.right.h_r_tree:
-						#Высота сокращается до корня!!!!
-						#Нужно продолжать вызывать функцию
-						tmp_next = tmp_transit.parent
-						if tmp_transit.parent is not None:
-							if tmp_transit.parent.right is tmp_transit:
-								orientation = "right"
-							elif tmp_transit.parent.left is tmp_transit:
-								orientation = "left"
-						else:
-							orientation = "None"
+					#продолжаем вызывать функцию
+					self.__count_skew_delete(tmp_next, orientation)
+				#Условие для большого левого вращения
+				elif tmp_transit.right.h_l_tree > tmp_transit.right.h_r_tree:
+					#Высота сокращается до корня!!!!
+					#Нужно продолжать вызывать функцию
+					tmp_next = tmp_transit.parent
+					if tmp_transit.parent is not None:
+						if tmp_transit.parent.right is tmp_transit:
+							orientation = "right"
+						elif tmp_transit.parent.left is tmp_transit:
+							orientation = "left"
+					else:
+						orientation = "None"
 							
-						self.big_left_rotation(tmp_transit.right)
+					self.__big_left_rotation(tmp_transit.right)
 						
-						#продолжаем вызывать функцию
-						self.count_skew_delete(tmp_next, orientation)
+					#продолжаем вызывать функцию
+					self.__count_skew_delete(tmp_next, orientation)
 						
-					elif tmp_transit.right.h_l_tree == tmp_transit.right.h_r_tree:
-						#Особый случай!!!
-						self.small_left_rotation(tmp_transit.right)
+				elif tmp_transit.right.h_l_tree == tmp_transit.right.h_r_tree:
+					#Особый случай!!!
+					self.__small_left_rotation(tmp_transit.right)
 						
 		elif tmp_transit.skew + corrective == 1: #было 0 стало 1
 			
@@ -502,7 +520,7 @@ class Tree:
 					orientation = "right"
 				elif tmp_transit.parent.left is tmp_transit:
 					orientation = "left"
-				self.count_skew_delete(tmp_transit.parent, orientation)
+				self.__count_skew_delete(tmp_transit.parent, orientation)
 				
 		elif tmp_transit.skew + corrective == -1: #было 0 стало -1
 			
@@ -512,49 +530,54 @@ class Tree:
 		elif tmp_transit.skew + corrective == -2: #было -1 стало -2
 			
 			tmp_transit.h_r_tree -= 1
-			if tmp_transit.h_r_tree + 1 == max(tmp_transit.left.h_r_tree, tmp_transit.left.h_l_tree):
-					#Условие для малого правого вращения
-					if tmp_transit.left.h_l_tree > tmp_transit.left.h_r_tree:
-						#Высота сокращается до корня!!!!
-						#Нужно продолжать вызывать функцию
-						tmp_next = tmp_transit.parent
-						if tmp_transit.parent is not None:
-							if tmp_transit.parent.right is tmp_transit:
-								orientation = "right"
-							elif tmp_transit.parent.left is tmp_transit:
-								orientation = "left"
-						else:
-							orientation = "None"
+			if tmp_transit.h_r_tree + 1 == \
+					max(tmp_transit.left.h_r_tree, tmp_transit.left.h_l_tree):
+				#Условие для малого правого вращения
+				if tmp_transit.left.h_l_tree > tmp_transit.left.h_r_tree:
+					#Высота сокращается до корня!!!!
+					#Нужно продолжать вызывать функцию
+					tmp_next = tmp_transit.parent
+					if tmp_transit.parent is not None:
+						if tmp_transit.parent.right is tmp_transit:
+							orientation = "right"
+						elif tmp_transit.parent.left is tmp_transit:
+							orientation = "left"
+					else:
+						orientation = "None"
 							
-						self.small_right_rotation(tmp_transit.left)
+					self.__small_right_rotation(tmp_transit.left)
 						
-						#продолжаем вызывать функцию
-						self.count_skew_delete(tmp_next, orientation)
-					#Условие для большого правого вращения
-					elif tmp_transit.left.h_l_tree < tmp_transit.left.h_r_tree:
-						#Высота сокращается до корня!!!!
-						#Нужно продолжать вызывать функцию
-						tmp_next = tmp_transit.parent
-						if tmp_transit.parent is not None:
-							if tmp_transit.parent.right is tmp_transit:
-								orientation = "right"
-							elif tmp_transit.parent.left is tmp_transit:
-								orientation = "left"
-						else:
-							orientation = "None"
+					#продолжаем вызывать функцию
+					self.__count_skew_delete(tmp_next, orientation)
+				#Условие для большого правого вращения
+				elif tmp_transit.left.h_l_tree < tmp_transit.left.h_r_tree:
+					#Высота сокращается до корня!!!!
+					#Нужно продолжать вызывать функцию
+					tmp_next = tmp_transit.parent
+					if tmp_transit.parent is not None:
+						if tmp_transit.parent.right is tmp_transit:
+							orientation = "right"
+						elif tmp_transit.parent.left is tmp_transit:
+							orientation = "left"
+					else:
+						orientation = "None"
 							
-						self.big_right_rotation(tmp_transit.left)
+					self.__big_right_rotation(tmp_transit.left)
 						
-						#продолжаем вызывать функцию
-						self.count_skew_delete(tmp_next, orientation)
+					#продолжаем вызывать функцию
+					self.__count_skew_delete(tmp_next, orientation)
 					
-					elif tmp_transit.left.h_l_tree == tmp_transit.left.h_r_tree:
-						#Особый случай!!!
-						self.small_right_rotation(tmp_transit.left)
+				elif tmp_transit.left.h_l_tree == tmp_transit.left.h_r_tree:
+					#Особый случай!!!
+					self.__small_right_rotation(tmp_transit.left)
 		return
 
 
 	def is_empty(self):
+		"""
+		Returns True if the tree is empty,
+		otherwise False
+		"""
 		if self.root is None:
 			return True
 		return False
@@ -562,7 +585,8 @@ class Tree:
 
 	def show(self):
 		"""
-		Возвращает упорядоченный список ключей
+		Returns an ordered list of keys,
+		the tree becomes empty
 		"""
 		B = [0]*self.size
 		i = 0
