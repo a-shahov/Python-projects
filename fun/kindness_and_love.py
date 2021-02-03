@@ -8,10 +8,13 @@ class Line:
 	def __init__(self, size, point_start, point_finish, window):
 		
 		loc_param = 0.225 #line length to width ratio
-		_line = gr.Line(point_start, point_finish)
-		_line.setWidth(loc_param * size)
-		_line.setOutline("black")
-		_line.draw(window)
+		self._line = gr.Line(point_start, point_finish)
+		self._line.setWidth(loc_param * size)
+		self._line.setOutline("black")
+		self._line.draw(window)
+	
+	def undraw(self):
+		self._line.undraw()
 
 
 def love(size):
@@ -44,7 +47,7 @@ def background(size, win_size, window):
 
 def vertical_line(size, win_size, window):
 	
-	loc_iter = 50
+	loc_iter = 35
 	step = size/loc_iter
 	point_start = gr.Point(1.4*win_size/2, win_size/2)
 	x1, y1 = 1.4*win_size/2, win_size/2
@@ -67,17 +70,35 @@ def vertical_line(size, win_size, window):
 		point_finish_2 = gr.Point(x2, y2)
 		point_finish_3 = gr.Point(x3, y3)
 		point_finish_4 = gr.Point(x4, y4)
+		
+		try:
+			first_line_ = first_line
+			second_line_ = second_line
+			third_line_ = third_line
+			fourth_line_ = fourth_line
+		except:
+			pass
+			
 		first_line = Line(size, point_start, point_finish_1, window)
 		second_line = Line(size, point_start, point_finish_2, window)
 		third_line = Line(size, point_start, point_finish_3, window)
 		fourth_line = Line(size, point_start, point_finish_4, window)
 		
+		try:
+			first_line_.undraw()
+			second_line_.undraw()
+			third_line_.undraw()
+			fourth_line_.undraw()
+		except:
+			pass
+		
+		time.sleep(0.03)
 	
 	
 def horizontal_line(size, win_size, window):
 	
 	cor = 0.225*0.5*size/math.sqrt(2)
-	loc_iter = 50
+	loc_iter = 35
 	step = size/loc_iter
 	point_start_1 = gr.Point(1.4*win_size/2+size/math.sqrt(2)-cor,
 		win_size/2+size/math.sqrt(2)-cor)
@@ -110,10 +131,30 @@ def horizontal_line(size, win_size, window):
 		point_finish_2 = gr.Point(x2, y2)
 		point_finish_3 = gr.Point(x3, y3)
 		point_finish_4 = gr.Point(x4, y4)
+		
+		try:
+			first_line_ = first_line
+			second_line_ = second_line
+			third_line_ = third_line
+			fourth_line_ = fourth_line
+		except:
+			pass
+		
 		first_line = Line(size, point_start_1, point_finish_1, window)
 		second_line = Line(size, point_start_2, point_finish_2, window)
+		thirdnd_line = Line(size, point_start_2, point_finish_2, window)
 		third_line = Line(size, point_start_3, point_finish_3, window)
 		fourth_line = Line(size, point_start_4, point_finish_4, window)
+		
+		try:
+			first_line_.undraw()
+			second_line_.undraw()
+			third_line_.undraw()
+			fourth_line_.undraw()
+		except:
+			pass
+		
+		time.sleep(0.03)
 
 
 love(211)
