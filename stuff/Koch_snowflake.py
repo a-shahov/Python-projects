@@ -5,15 +5,14 @@ def draw(length, depth):
 	
 	if depth == 0: 
 		turtle.forward(length)
-		return length
-	
-	draw(length/3, depth-1)
-	turtle.left(60)
-	draw(length/3, depth-1)
-	turtle.right(120)
-	draw(length/3, depth-1)
-	turtle.left(60)
-	draw(length/3, depth-1)
+	else:
+		draw(length/3, depth-1)
+		turtle.left(60)
+		draw(length/3, depth-1)
+		turtle.right(120)
+		draw(length/3, depth-1)
+		turtle.left(60)
+		draw(length/3, depth-1)
 	
 
 def draw_snow(length, depth):
