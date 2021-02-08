@@ -16,7 +16,7 @@ def draw(length, depth, x, y):
 		turtle.pendown()
 		draw(length/3, depth-1, x + 2*length/3, y-15)
 
-	
+
 x, y = -350, 0
 turtle.penup()
 turtle.goto(x, y)
