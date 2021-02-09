@@ -30,7 +30,7 @@ class Tree:
 	is_empty() - Returns True if the tree is empty,
 	otherwise False
 
-	show() - Returns an ordered list of keys, the tree becomes empty
+	get_list_keys() - Returns an ordered list of keys
 
 	The size attribute contains the size of the tree
 	"""
@@ -584,7 +584,7 @@ class Tree:
 				tmp = tmp.left
 			else:
 				break
-		return __craft(tmp)
+		return self.__craft(tmp)
 
 
 	def __craft(self, tmp):
@@ -595,32 +595,41 @@ class Tree:
 		"""
 		Keys = [None]*self.size
 		Keys[0] = tmp.key
-		used = set(tmp.key)
+		used = {tmp.key}
 		count = 1
 		while count < self.size: 
 			
-			tmp = tmp.parent
-			Keys[count] = tmp.key
-			used.add(tmp.key)
-			count += 1
-			
 			if tmp.right is not None and tmp.right.key not in used:
-				tmp = __find_min(tmp)
+				tmp = self.__find_min(tmp)
 				Keys[count] = tmp.key
 				used.add(tmp.key)
 				count += 1
+				continue
+				
+			if tmp.parent is not None and tmp.parent.key not in used:
+				tmp = tmp.parent
+				Keys[count] = tmp.key
+				used.add(tmp.key)
+				count += 1
+				continue
+				
+			tmp = tmp.parent
+		return Keys
 
 
-	def show(self):
+	def _test(self):
 		"""
 		Returns an ordered list of keys,
-		the tree becomes empty
+		the tree becomes empty.
+		The function tests the delete option
 		"""
-		B = [0]*self.size
+		B = [None]*self.size
 		tmp = self.root
+		i = 0
 		while True:
 			if tmp.left is None:
 				B[i] = tmp.key
+				i += 1
 				self.delete(tmp.key)
 				if self.root is not None:
 					tmp = self.root
@@ -657,13 +666,13 @@ if __name__ == "__main__":
 			
 		try:
 			print(A)
-			B = tree.show()
+			B = tree._test()
 			print(B)
 			if sorted(A) == B:	
 				print("Ok")
 			else:
 				print("Failure")
-				print("Tests passed",p+1 ,"of", N)
+				print("Tests passed",p ,"of", N)
 				break
 				
 		except:
