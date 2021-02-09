@@ -571,18 +571,56 @@ class Tree:
 		return False
 
 
+	def get_list_keys(self):
+		"""
+		Returns an ordered list of keys,
+		if Tree is empty, return None
+		"""
+		if self.root is None:
+			return None
+		tmp = self.root
+		while True:
+			if tmp.left is not None:
+				tmp = tmp.left
+			else:
+				break
+		return __craft(tmp)
+
+
+	def __craft(self, tmp):
+		"""
+		uses an algorithm similar 
+		to depth-first traversal to create 
+		an ordered list of keys
+		"""
+		Keys = [None]*self.size
+		Keys[0] = tmp.key
+		used = set(tmp.key)
+		count = 1
+		while count < self.size: 
+			
+			tmp = tmp.parent
+			Keys[count] = tmp.key
+			used.add(tmp.key)
+			count += 1
+			
+			if tmp.right is not None and tmp.right.key not in used:
+				tmp = __find_min(tmp)
+				Keys[count] = tmp.key
+				used.add(tmp.key)
+				count += 1
+
+
 	def show(self):
 		"""
 		Returns an ordered list of keys,
 		the tree becomes empty
 		"""
 		B = [0]*self.size
-		i = 0
 		tmp = self.root
 		while True:
 			if tmp.left is None:
 				B[i] = tmp.key
-				i += 1
 				self.delete(tmp.key)
 				if self.root is not None:
 					tmp = self.root
