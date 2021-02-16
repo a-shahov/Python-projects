@@ -261,10 +261,9 @@ class Tree:
 		add a key (key) with value (value),
 		value by default None
 		"""
-		notice = "An element with such a key is already contained in the tree"
-		assert not self.find(key), notice
 		if self.root is None:
 			self.root = Node(key, value)
+			self.size += 1
 		else:
 			x = Node(key, value)
 			tmp = self.root
@@ -274,19 +273,24 @@ class Tree:
 						tmp.right = x
 						x.parent = tmp
 						tmp = x
+						self.size += 1
+						self.__count_skew_push(tmp)
 						break
 					else:
 						tmp = tmp.right
-				else:
+				elif x.key < tmp.key:
 					if tmp.left is None:
 						tmp.left = x
 						x.parent = tmp
 						tmp = x
+						self.size += 1
+						self.__count_skew_push(tmp)
 						break
 					else:
 						tmp = tmp.left
-			self.__count_skew_push(tmp)
-		self.size += 1
+				elif x.key == tmp.key:
+					tmp.key, tmp.value = x.key, x.value
+					break
 
 	
 	def find(self, key, from_the_inside=False):
