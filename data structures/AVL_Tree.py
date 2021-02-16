@@ -31,6 +31,10 @@ class Tree:
 	otherwise False
 
 	get_list_keys() - Returns an ordered list of keys
+	
+	get_min() - Returns the minimum key and its value
+	
+	get_max() - Returns the maximum key and its value
 
 	The size attribute contains the size of the tree
 	"""
@@ -637,9 +641,33 @@ class Tree:
 					return B
 			else:
 				tmp = tmp.left
+	
+	
+	def get_min(self):
+		"""
+		Returns the minimum key and its value
+		"""
+		assert self.root, "Tree is empty!" 
+		tmp = self.root
+		while True:
+			if tmp.left is None:
+				return tmp.key, tmp.value
+			tmp = tmp.left
+
+	
+	def get_max(self):
+		"""
+		Returns the maximum key and its value
+		"""
+		assert self.root, "Tree is empty!" 
+		tmp = self.root
+		while True:
+			if tmp.right is None:
+				return tmp.key, tmp.value
+			tmp = tmp.right
 
 
-if __name__ == "__main__":	
+if __name__ == "__main_":	
 	import random
 	"""
 	A list of fixed
