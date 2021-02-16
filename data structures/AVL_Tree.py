@@ -19,9 +19,8 @@ class Tree:
 	push(key, value) - add a key (key) with value (value),
 	value by default None
 
-	find(key) - search by key, if present returns True
-	otherwise False, can return a reference to the searched object, 
-	see documentation
+	get(key) - Looks for an element in the tree by its key,
+	if successful returns (key, value), otherwise False
 
 	delete(key) - deletes an element from the tree by key
 
@@ -292,23 +291,39 @@ class Tree:
 					tmp.key, tmp.value = x.key, x.value
 					break
 
-	
-	def find(self, key, from_the_inside=False):
+
+	def get(self, key):
 		"""
-		If the item is in the tree:
-		can return a link to the element you are looking for,
-		if from_the_inside == True,
-		otherwise returns True
+		Looks for an element in the tree by its key,
+		if successful returns (key, value), otherwise False
 		"""
 		if self.root is None:
 			return False
 		tmp = self.root
 		while True:
 			if key == tmp.key:
-				if from_the_inside:
-					return tmp
-				else:
-					return True
+				return tmp.key, tmp.value
+			elif key > tmp.key:
+				if tmp.right is None:
+					return False
+				tmp = tmp.right
+			else:
+				if tmp.left is None:
+					return False
+				tmp = tmp.left
+
+
+	def _find(self, key):
+		"""
+		If the item is in the tree:
+		can return a link to the element you are looking for
+		"""
+		if self.root is None:
+			return False
+		tmp = self.root
+		while True:
+			if key == tmp.key:
+				return tmp
 			elif key > tmp.key:
 				if tmp.right is None:
 					return False
@@ -331,7 +346,7 @@ class Tree:
 		"""
 		tmp - link to the item to remove
 		"""
-		tmp = tmp.right
+		tmp = tmp.right #transitions to right subtree
 		while True:
 			if tmp.left is None:
 				return tmp
@@ -342,7 +357,7 @@ class Tree:
 		"""
 		deletes an element from the tree by key
 		"""
-		tmp = self.find(key, True) #Returns a reference to the searched object or False
+		tmp = self._find(key) #Returns a reference to the searched object or False
 		assert tmp is not False, "There is no such element in the tree"
 		self.size -= 1
 		if tmp.right is None: #There is no right subtree
@@ -671,7 +686,7 @@ class Tree:
 			tmp = tmp.right
 
 
-if __name__ == "__main_":	
+if __name__ == "__main__":	
 	import random
 	"""
 	A list of fixed
