@@ -32,7 +32,7 @@ turtle.pendown()
 turtle.color("black", "red")
 turtle.width(3)
 turtle.begin_fill()
-draw_snow(540, 3)
+draw_snow(540, 4)
 turtle.end_fill()
 	
 a = input()

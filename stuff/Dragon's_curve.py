@@ -40,6 +40,6 @@ turtle.speed('fastest')
 turtle.shape('turtle')
 turtle.width(3)
 
-draw(300,10)
+draw(300,11)
 
 a = input()

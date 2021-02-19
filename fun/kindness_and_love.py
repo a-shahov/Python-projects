@@ -142,7 +142,6 @@ def horizontal_line(size, win_size, window):
 		
 		first_line = Line(size, point_start_1, point_finish_1, window)
 		second_line = Line(size, point_start_2, point_finish_2, window)
-		thirdnd_line = Line(size, point_start_2, point_finish_2, window)
 		third_line = Line(size, point_start_3, point_finish_3, window)
 		fourth_line = Line(size, point_start_4, point_finish_4, window)
 		

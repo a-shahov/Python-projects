@@ -12,6 +12,7 @@ class Node:
 		self.left = None #link to the left child
 		self.parent = None #parent link
 
+
 class Tree:
 	"""
 	AVL - tree
@@ -22,7 +23,8 @@ class Tree:
 	get(key) - Looks for an element in the tree by its key,
 	if successful returns (key, value), otherwise False
 
-	delete(key) - deletes an element from the tree by key
+	pop(key) - deletes an element from the tree by key
+	and return (key, value)
 
 	clear() - Makes the tree empty
 
@@ -353,12 +355,14 @@ class Tree:
 			tmp = tmp.left
 
 
-	def delete(self, key):
+	def pop(self, key):
 		"""
 		deletes an element from the tree by key
+		and return (key, value)
 		"""
 		tmp = self._find(key) #Returns a reference to the searched object or False
 		assert tmp is not False, "There is no such element in the tree"
+		couple = (tmp.key, tmp.value)
 		self.size -= 1
 		if tmp.right is None: #There is no right subtree
 			if tmp.left is None: #The element to remove (tmp) - sheet
@@ -452,6 +456,7 @@ class Tree:
 				tmp_min.left = tmp.left
 		
 		self.__count_skew_delete(tmp_transit, orientation)
+		return couple
 
 
 	def __count_skew_delete(self, tmp_transit, orientation):
@@ -653,7 +658,7 @@ class Tree:
 			if tmp.left is None:
 				B[i] = tmp.key
 				i += 1
-				self.delete(tmp.key)
+				self.pop(tmp.key)
 				if self.root is not None:
 					tmp = self.root
 				else:
@@ -688,44 +693,48 @@ class Tree:
 
 if __name__ == "__main__":	
 	import random
-	"""
-	A list of fixed
-	length (you can make a random length it doesn't matter)
-	from random numbers from 0 to 100, these numbers are also added to the tree.
-	Next, the list is displayed and using the show () method, it is displayed
-	list of tree keys. Since the show () method empties the tree,
-	then by the ordering of the list of keys one can judge about
-	correct / incorrect operation of the tree.
-	I have no proof that this way of testing the code,
-	guarantees the absolute correctness of the code.
-	"""
-	N = 3000
-	for p in range(N):
-		tree = Tree()
-		A = []
+	
+	def test1():
+		"""
+		A list of fixed
+		length (you can make a random length it doesn't matter)
+		from random numbers from 0 to 100, these numbers are also added to the tree.
+		Next, the list is displayed and using the show () method, it is displayed
+		list of tree keys. Since the show () method empties the tree,
+		then by the ordering of the list of keys one can judge about
+		correct / incorrect operation of the tree.
+		I have no proof that this way of testing the code,
+		guarantees the absolute correctness of the code.
+		"""
+		print("Sorting testing...")
+		N = 3000
+		for p in range(N):
+			tree = Tree()
+			A = []
 		
-		for i in range(25):
-			x = random.randint(0,100)
-			while x in A:
+			for i in range(25):
 				x = random.randint(0,100)
-			tree.push(x)
-			A.append(x)
+				while x in A:
+					x = random.randint(0,100)
+				tree.push(x)
+				A.append(x)
 			
-		try:
-			print(A)
-			B = tree._test()
-			print(B)
-			if sorted(A) == B:	
-				print("Ok")
-			else:
+			try:
+				B = tree._test()
+				if sorted(A) != B:	
+					print("Failure")
+					print("Tests passed",p ,"of", N)
+					print(A, B, sep="\n")
+					break
+				
+			except:
+				print(A)
 				print("Failure")
 				print("Tests passed",p ,"of", N)
 				break
-				
-		except:
-			print(A)
-			print("Failure")
-			print("Tests passed",p ,"of", N)
-			break
-		if p+1 == N:
+		else:
 			print("Tests passed",p+1 ,"of", N)
+			print("Successfully")
+	
+	test1()
+	
