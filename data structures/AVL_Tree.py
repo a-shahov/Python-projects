@@ -707,15 +707,15 @@ if __name__ == "__main__":
 		guarantees the absolute correctness of the code.
 		"""
 		print("Sorting testing...")
-		N = 3000
+		N = 1000
 		for p in range(N):
 			tree = Tree()
 			A = []
 		
-			for i in range(25):
-				x = random.randint(0,100)
+			for i in range(100):
+				x = random.randint(0,1000)
 				while x in A:
-					x = random.randint(0,100)
+					x = random.randint(0,1000)
 				tree.push(x)
 				A.append(x)
 			
@@ -726,7 +726,6 @@ if __name__ == "__main__":
 					print("Tests passed",p ,"of", N)
 					print(A, B, sep="\n")
 					break
-				
 			except:
 				print(A)
 				print("Failure")
