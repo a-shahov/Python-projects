@@ -692,7 +692,7 @@ class Tree:
 
 
 if __name__ == "__main__":	
-	import random
+	import random   
 	
 	def test1():
 		"""
