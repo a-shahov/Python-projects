@@ -42,6 +42,29 @@ class Tree:
 	def __init__(self):
 		self.root = None
 		self.size = 0
+
+
+	def __str__(self):
+		if self.root is None:
+			return "Tree is empty!"
+		tmp = self.root
+		return self._BFS(tmp)
+
+
+	def _BFS(self, tmp, string="", depth=0):
+		tmp._depth = depth
+		flag = True
+		for number, child in (0, tmp.left), (1, tmp.right):
+			if child is not None:
+				string = self._BFS(child, string, depth+1)
+				if flag:
+					string += "{}{}\n".format("---"*(depth), tmp)
+					flag = False
+			else:
+				if not number:
+					flag = False
+					string += "{}{}\n".format("---"*(depth), tmp)
+		return string
 	
 
 	def __small_left_rotation(self, tmp):
@@ -736,4 +759,3 @@ if __name__ == "__main__":
 			print("Successfully")
 	
 	test1()
-	
