@@ -119,6 +119,7 @@ class Tree:
 		if self.root is None:
 			self.root = x
 			self.size += 1
+			self._balance_push(x)
 		else:
 			tmp = self.root
 			while True:
@@ -162,8 +163,8 @@ class Tree:
 					return None
 				else:
 					tmp = tmp.left
-	
-	
+
+
 	def pop(self, key):
 		tmp = self._find(key)
 		assert tmp is not None
@@ -236,17 +237,54 @@ class Tree:
 		return couple
 
 
-A = Tree()
+class RBTree(Tree):
+	def __init__(self):
+		Tree.__init__(self)
+
+
+	def _create_node(self, key, value):
+		return RedBlackNode(key, value)
+
+
+	def _recolour(self, node):
+		pass
+
+
+	def _big_rotation(self, node):
+		pass
+
+
+	def _small_rotation(self, node):
+		pass
+
+
+	def _balance_push(self, node):
+		if node is self.root:
+			node.color = "black"
+		elif node.parent.color == "black":
+			pass
+		else:
+			father, grfather = node.parent, node.parent.parent
+			if grfather.left is father:
+				uncle = grfather.right
+			else:
+				uncle = grfather.left
+			if father.color == "red" and uncle is not None and uncle.color == "red":
+				self._recolour(node)
+			elif parent.color == "red" and (uncle is None or ucle.color == "black"):
+				if ((grfather.left is parent and parent.right is node) or
+					(grfather.right is parent and parent.left is node)):
+					self._small_rotation(node)
+				else:
+					self._big_rotation(node)
+
+
+
+
+
+
+A = RBTree()
 A.push(10)
-A.push(5)
-A.push(7)
-A.push(4)
-A.push(15)
-A.push(14)
-A.push(16)
-A.push(17)
-A.push(18)
-A.push(19)
-print(A)
-A.pop(4)
-print(A)
+
+
+
