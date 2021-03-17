@@ -247,15 +247,100 @@ class RBTree(Tree):
 
 
 	def _recolour(self, node):
-		pass
+		father = node.parent
+		grfather = father.parent
+		if father is grfather.left:
+			uncle = grfather.right
+		else:
+			uncle = grfather.left
+		
+		father.color = "black"
+		grfather.color = "red"
+		uncle.color = "black"
+		
+		self._balance_push(grfather)
 
 
-	def _big_rotation(self, node):
-		pass
+	def _big_right_rotation(self, node):
+		father = node.parent
+		grfather = father.parent
+		
+		grfather.left = father.right
+		if father.right is not None:
+			father.right.parent = grfather
+		
+		father.parent = grfather.parent
+		if grfather.parent is not None:
+			if grfather.parent.left is grfather:
+				grfather.parent.left = fatherr
+			else:
+				grfather.parent.right = father
+		grfather.parent = father
+		father.right = grfather
+		
+		if grfather is self.root:
+			self.root = father
+		
+		grfather.color = "red" 
+		father.color = "black"
 
 
-	def _small_rotation(self, node):
-		pass
+	def _big_left_rotation(self, node):
+		father = node.parent
+		grfather = father.parent
+		
+		grfather.right = father.left
+		if father.left is not None:
+			father.left.parent = grfather
+		
+		father.parent = grfather.parent
+		if grfather.parent is not None:
+			if grfather.parent.left is grfather:
+				grfather.parent.left = father
+			else:
+				grfather.parent.right = father
+		grfather.parent = father
+		father.left = grfather
+		
+		if grfather is self.root:
+			self.root = father
+		
+		grfather.color = "red" 
+		father.color = "black"
+
+
+	def _small_left_rotation(self, node):
+		father = node.parent
+		grfather = father.parent
+		
+		grfather.left = node
+		node.parent = grfather
+		
+		father.right = node.left
+		if node.left is not None:
+			node.left.parent = father
+		
+		node.left = father
+		father.parent = node
+		
+		self._big_right_rotation(father)
+
+
+	def _small_right_rotation(self, node):
+		father = node.parent
+		grfather = father.parent
+		
+		grfather.right = node
+		node.parent = grfather
+		
+		father.left = node.right
+		if node.right is not None:
+			node.right.parent = father
+		
+		node.right = father
+		father.parent = node
+		
+		self._big_left_rotation(father)
 
 
 	def _balance_push(self, node):
@@ -264,20 +349,23 @@ class RBTree(Tree):
 		elif node.parent.color == "black":
 			pass
 		else:
-			father, grfather = node.parent, node.parent.parent
+			father = node.parent
+			grfather = father.parent
 			if grfather.left is father:
 				uncle = grfather.right
 			else:
 				uncle = grfather.left
 			if father.color == "red" and uncle is not None and uncle.color == "red":
 				self._recolour(node)
-			elif parent.color == "red" and (uncle is None or ucle.color == "black"):
-				if ((grfather.left is parent and parent.right is node) or
-					(grfather.right is parent and parent.left is node)):
-					self._small_rotation(node)
-				else:
-					self._big_rotation(node)
-
+			elif father.color == "red" and (uncle is None or uncle.color == "black"):
+				if grfather.left is father and father.right is node:
+					self._small_left_rotation(node)
+				elif grfather.right is father and father.left is node:
+					self._small_right_rotation(node)
+				elif grfather.left is father and father.left is node:
+					self._big_right_rotation(node)
+				elif grfather.right is father and father.right is node:
+					self._big_left_rotation(node)
 
 
 
@@ -285,6 +373,15 @@ class RBTree(Tree):
 
 A = RBTree()
 A.push(10)
-
-
-
+A.push(11)
+A.push(12)
+A.push(13)
+A.push(14)
+A.push(15)
+A.push(16)
+A.push(17)
+A.push(18)
+A.push(19)
+A.push(20)
+A.push(21)
+print(A)
