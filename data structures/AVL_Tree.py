@@ -13,6 +13,9 @@ class Node:
 		self.parent = None #parent link
 
 
+	def __str__(self):
+		return str((self.key, self.value))
+
 class Tree:
 	"""
 	AVL - tree
@@ -54,14 +57,14 @@ class Tree:
 	def _BFS(self, tmp, string="", depth=0):
 		tmp._depth = depth
 		flag = True
-		for number, child in (0, tmp.left), (1, tmp.right):
+		for first, child in (True, tmp.right), (False, tmp.left):
 			if child is not None:
 				string = self._BFS(child, string, depth+1)
 				if flag:
 					string += "{}{}\n".format("---"*(depth), tmp)
 					flag = False
 			else:
-				if not number:
+				if first:
 					flag = False
 					string += "{}{}\n".format("---"*(depth), tmp)
 		return string

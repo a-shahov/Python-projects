@@ -5,11 +5,15 @@ class Node:
 		self.left = None
 		self.right = None
 		self.parent = None
-		self._depth = 0
 	
 	
 	def __str__(self):
 		return str((self.key, self.value))
+	
+	
+	def copy(self, obj):
+		self.key = obj.key
+		self.value = obj.value
 
 
 class RedBlackNode(Node):
@@ -42,18 +46,18 @@ class Tree:
 	def _BFS(self, tmp, string="", depth=0):
 		tmp._depth = depth
 		flag = True
-		for number, child in (0, tmp.left), (1, tmp.right):
+		for first, child in (True, tmp.right), (False, tmp.left):
 			if child is not None:
 				string = self._BFS(child, string, depth+1)
 				if flag:
 					string += "{}{}\n".format("---"*(depth), tmp)
 					flag = False
 			else:
-				if not number:
+				if first:
 					flag = False
 					string += "{}{}\n".format("---"*(depth), tmp)
 		return string
-			
+
 
 	def _create_node(self, key, value):
 		return Node(key, value)
@@ -89,6 +93,20 @@ class Tree:
 			if tmp.left is None:
 				return tmp
 			tmp = tmp.left
+
+
+	def _get_min(self, tmp): 
+		while True:
+			if tmp.left is None:
+				return tmp
+			tmp = tmp.left
+
+	
+	def _get_max(self, tmp):
+		while True:
+			if tmp.right is None:
+				return tmp
+			tmp = tmp.right
 
 
 	def get_min(self):
@@ -166,6 +184,44 @@ class Tree:
 
 
 	def pop(self, key):
+		tmp = self._find(key)
+		assert tmp is not None
+		couple = (tmp.key, tmp.value)
+		self.size -= 1
+		if tmp.right is None and tmp.left is None:
+			if tmp is self.root:
+				self.root = None
+			else:
+				if tmp.parent.right is tmp:
+					tmp.parent.right = None
+				else:
+					tmp.parent.left = None
+		elif tmp.right is None:
+			tmp_max = self._get_max(tmp.left)
+			tmp.copy(tmp_max)
+			if tmp_max.parent.left is tmp_max:
+				tmp_max.parent.left = tmp_max.left
+				if tmp_max.left is not None:
+					tmp_max.left.parent = tmp_max.parent
+			else:
+				tmp_max.parent.right = tmp_max.left
+				if tmp_max.left is not None:
+					tmp_max.left.parent = tmp_max.parent
+		else:
+			tmp_min = self._get_min(tmp.right)
+			tmp.copy(tmp_min)
+			if tmp_min.parent.left is tmp_min:
+				tmp_min.parent.left = tmp_min.right
+				if tmp_min.right is not None:
+					tmp_min.right.parent = tmp_min.parent
+			else:
+				tmp_min.parent.right = tmp_min.right
+				if tmp_min.right is not None:
+					tmp_min.right.parent = tmp_min.parent
+		return couple
+
+
+	def pop_irrelevant(self, key):
 		tmp = self._find(key)
 		assert tmp is not None
 		couple = (tmp.key, tmp.value)
@@ -363,7 +419,7 @@ class RBTree(Tree):
 				elif grfather.right is father and father.left is node:
 					self._small_right_rotation(node)
 				elif grfather.left is father and father.left is node:
-					self._big_right_rotation(node)
+					self._big_rigкht_rotation(node)
 				elif grfather.right is father and father.right is node:
 					self._big_left_rotation(node)
 
@@ -371,7 +427,7 @@ class RBTree(Tree):
 
 
 
-A = RBTree()
+A = Tree()
 A.push(10)
 A.push(11)
 A.push(12)
@@ -384,4 +440,8 @@ A.push(18)
 A.push(19)
 A.push(20)
 A.push(21)
+print(A)
+A.pop(18)
+A.pop(14)
+A.pop(10)
 print(A)
