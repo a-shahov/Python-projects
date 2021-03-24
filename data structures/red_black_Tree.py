@@ -20,6 +20,18 @@ class RedBlackNode(Node):
 	def __init__(self, key, value):
 		Node.__init__(self, key, value)
 		self.color = "red"
+	
+	
+	def copy(self, obj):
+		Node.copy(self, obj)
+		self.color = obj.color
+	
+	
+	def swap(self):
+		if self.color == "black":
+			self.color = "red"
+		else:
+			self.color = "black"
 
 
 class Tree:
@@ -350,12 +362,62 @@ class RBTree(Tree):
 					self._big_rigкht_rotation(node)
 				elif grfather.right is father and father.right is node:
 					self._big_left_rotation(node)
+	
+	
+	def _balance_pop(self, tmp, direction):
+		right = True if direction == "right" else False
+		parent = tmp
+		if parent is not None:
+			if right:
+				brother = parent.left
+			else:
+				brother = parent.right
+			if brother is not None:
+				l_nephew = brother.left
+				r_nephew = brother.right
+		else:
+			return
+		if parent.color == "black" and brother.color == "black":
+			if ((l_nephew is None or l_nephew.color == "black") and
+				(r_nephew is None or r_nephew.color == "black"):
+				_swap_color(parent, brother)
+				if parent is not None and parent.parent.left is parent:
+					direction = "left"
+				else:
+					direction = "right"
+				self._balance_pop(parent.parent, direction)
+			elif (not right) and (r_nephew is not None) and (r_nephew.color == "red"):
+				_left_rotation(brother)
+				_swap_color(r_nephew)
+
+
+	def _left_rotation():
+		pass
+
+
+	def _right_rotation():
+		pass
+
+
+	def _swap_color(*args):
+		for vert in args:
+			vert.swap()
 
 
 
 
 
 A = Tree()
+
+A.push(10)
+A.push(11)
+A.push(12)
+print(A)
+A.pop(10)
+A.pop(11)
+A.pop(12)
+print(A)
+
 A.push(10)
 A.push(11)
 A.push(12)
