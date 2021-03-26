@@ -52,7 +52,7 @@ class Tree:
 		if self.root is None:
 			return "Tree is empty!"
 		tmp = self.root
-		return _BFS(tmp)
+		return self._BFS(tmp)
 
 
 	def _BFS(self, tmp, string="", depth=0):
@@ -138,11 +138,11 @@ class Tree:
 
 
 	def push(self, key, value=None):
-		x = _create_node(key, value)
+		x = self._create_node(key, value)
 		if self.root is None:
 			self.root = x
 			self.size += 1
-			_balance_push(x)
+			self._balance_push(x)
 		else:
 			tmp = self.root
 			while True:
@@ -154,7 +154,7 @@ class Tree:
 						tmp.right = x
 						x.parent = tmp
 						self.size += 1
-						_balance_push(x)
+						self._balance_push(x)
 						break
 					else:
 						tmp = tmp.right
@@ -163,7 +163,7 @@ class Tree:
 						tmp.left = x
 						x.parent = tmp
 						self.size += 1
-						_balance_push(x)
+						self._balance_push(x)
 						break
 					else:
 						tmp = tmp.left
@@ -372,7 +372,7 @@ class RBTree(Tree):
 			return
 		if parent.color == "black" and brother.color == "black":
 			if ((l_nephew is None or l_nephew.color == "black") and
-				(r_nephew is None or r_nephew.color == "black"):
+					(r_nephew is None or r_nephew.color == "black")):
 				self._swap_color(parent, brother)
 				if parent is not None and parent.parent.left is parent:
 					direction = "left"
@@ -389,7 +389,7 @@ class RBTree(Tree):
 				self._right_rotation(l_nephew)
 				self._swap_color(l_nephew, brother)
 				self._balance_pop(parent, direction)
-			elif right and (l_nephew is None) and (r_nephew.color = "red"):
+			elif right and (l_nephew is None) and (r_nephew.color == "red"):
 				self._left_rotation(r_nephew)
 				self._swap_color(r_nephew, brother)
 				self._balance_pop(parent, direction)
@@ -403,8 +403,8 @@ class RBTree(Tree):
 				self._swap_color(parent, brother)
 				self._balance_pop(parent, direction)
 		elif parent.color == "red" and brother.color == "black":
-			if ((l_nephew is None or l_nephew.color == "black") and
-				(r_nephew is None or r_nephew.color == "black")):
+			if ((l_nephew is None or l_nephew.color == "black") and 
+					(r_nephew is None or r_nephew.color == "black")):
 				self._swap_color(parent, brother)
 			elif (not right) and (r_nephew is not None) and (r_nephew.color == "red"):
 				self._left_rotation(brother)
