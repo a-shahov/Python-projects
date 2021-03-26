@@ -79,8 +79,12 @@ class Tree:
 		pass
 
 
-	def _balance_pop(self, tmp):
+	def _balance_pop(self, tmp, direction):
 		pass
+
+
+	def _check(self, tmp):
+		return None, None
 
 
 	def _find(self, key):
@@ -197,12 +201,15 @@ class Tree:
 			if tmp is self.root:
 				self.root = None
 			else:
+				parent, direction = self._check(tmp)
 				if tmp.parent.right is tmp:
 					tmp.parent.right = None
 				else:
 					tmp.parent.left = None
+				self._balance_pop(parent, direction)
 		elif tmp.right is None:
 			tmp_max = self._get_max(tmp.left)
+			parent, direction = self._check(tmp_max)
 			tmp.copy(tmp_max)
 			if tmp_max.parent.left is tmp_max:
 				tmp_max.parent.left = tmp_max.left
@@ -212,8 +219,10 @@ class Tree:
 				tmp_max.parent.right = tmp_max.left
 				if tmp_max.left is not None:
 					tmp_max.left.parent = tmp_max.parent
+			self._balance_pop(parent, direction)
 		else:
 			tmp_min = self._get_min(tmp.right)
+			parent, direction = self._check(tmp_min)
 			tmp.copy(tmp_min)
 			if tmp_min.parent.left is tmp_min:
 				tmp_min.parent.left = tmp_min.right
@@ -223,6 +232,7 @@ class Tree:
 				tmp_min.parent.right = tmp_min.right
 				if tmp_min.right is not None:
 					tmp_min.right.parent = tmp_min.parent
+			self._balance_pop(parent, direction)
 		return couple
 
 
@@ -355,8 +365,25 @@ class RBTree(Tree):
 					self._big_rigкht_rotation(node)
 				elif grfather.right is father and father.right is node:
 					self._big_left_rotation(node)
-	
-	
+
+
+	def _check(self, tmp):
+		if tmp.parent.left is tmp:
+			direction = "left"
+		else:
+			direction = "right"
+		if tmp.color == "black" and tmp.right is None and tmp.left is None:
+			return tmp.parent, direction
+		elif tmp.color == "black" and (tmp.right is not None or tmp.left is not None):
+			if tmp.right is not None:
+				tmp.right.color = "black"
+			elif tmp.left is not None:
+				tmp.left.color = "black"
+			return None, direction
+		else:
+			return None, direction
+
+
 	def _balance_pop(self, tmp, direction):
 		right = True if direction == "right" else False
 		parent = tmp
@@ -474,7 +501,7 @@ class RBTree(Tree):
 
 
 
-A = Tree()
+A = RBTree()
 
 A.push(10)
 A.push(11)
