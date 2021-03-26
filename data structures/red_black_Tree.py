@@ -422,12 +422,48 @@ class RBTree(Tree):
 				self._balance_pop(parent, direction)
 
 
-	def _left_rotation(self):
-		pass
+	def _left_rotation(self, tmp):
+		parent = tmp.parent
+		child = tmp
+		left = tmp.left
+		
+		child.parent = parent.parent
+		if parent.parent is not None:
+			if parent.parent.left is parent:
+				parent.parent.left = child
+			else:
+				parent.parent.right = child
+		else:
+			self.root = child
+			
+		child.left = parent
+		parent.parent = child
+		
+		parent.right = left
+		if left is not None:
+			left.parent = parent
 
 
-	def _right_rotation(self):
-		pass
+	def _right_rotation(self, tmp):
+		parent = tmp.parent
+		child = tmp
+		right = tmp.right
+		
+		child.parent = parent.parent
+		if parent.parent is not None:
+			if parent.parent.left is parent:
+				parent.parent.left = child
+			else:
+				parent.parent.right = child
+		else:
+			self.root = child
+			
+		child.right = parent
+		parent.parent = child
+		
+		parent.left = right
+		if right is not None:
+			right.parent = parent
 
 
 	def _swap_color(self, *args):
