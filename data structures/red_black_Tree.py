@@ -20,6 +20,10 @@ class RedBlackNode(Node):
 	def __init__(self, key, value):
 		Node.__init__(self, key, value)
 		self.color = "red"
+
+
+	def __str__(self):
+		return str((self.key,self.color))
 	
 	
 	def copy(self, obj):
@@ -400,7 +404,7 @@ class RBTree(Tree):
 		if parent.color == "black" and brother.color == "black":
 			if ((l_nephew is None or l_nephew.color == "black") and
 					(r_nephew is None or r_nephew.color == "black")):
-				self._swap_color(parent, brother)
+				self._swap_color(brother)
 				if parent is not None and parent.parent.left is parent:
 					direction = "left"
 				else:
@@ -497,20 +501,7 @@ class RBTree(Tree):
 		for vert in args:
 			vert.swap()
 
-
-
-
-
 A = RBTree()
-
-A.push(10)
-A.push(11)
-A.push(12)
-print(A)
-A.pop(10)
-A.pop(11)
-A.pop(12)
-print(A)
 
 A.push(10)
 A.push(11)
@@ -525,7 +516,5 @@ A.push(19)
 A.push(20)
 A.push(21)
 print(A)
-A.pop(18)
-A.pop(14)
 A.pop(10)
 print(A)
