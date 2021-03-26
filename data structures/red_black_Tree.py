@@ -52,7 +52,7 @@ class Tree:
 		if self.root is None:
 			return "Tree is empty!"
 		tmp = self.root
-		return self._BFS(tmp)
+		return _BFS(tmp)
 
 
 	def _BFS(self, tmp, string="", depth=0):
@@ -100,13 +100,6 @@ class Tree:
 				tmp = tmp.left
 
 
-	def _find_min(self, tmp):
-		while True:
-			if tmp.left is None:
-				return tmp
-			tmp = tmp.left
-
-
 	def _get_min(self, tmp): 
 		while True:
 			if tmp.left is None:
@@ -145,11 +138,11 @@ class Tree:
 
 
 	def push(self, key, value=None):
-		x = self._create_node(key, value)
+		x = _create_node(key, value)
 		if self.root is None:
 			self.root = x
 			self.size += 1
-			self._balance_push(x)
+			_balance_push(x)
 		else:
 			tmp = self.root
 			while True:
@@ -161,7 +154,7 @@ class Tree:
 						tmp.right = x
 						x.parent = tmp
 						self.size += 1
-						self._balance_push(x)
+						_balance_push(x)
 						break
 					else:
 						tmp = tmp.right
@@ -170,7 +163,7 @@ class Tree:
 						tmp.left = x
 						x.parent = tmp
 						self.size += 1
-						self._balance_push(x)
+						_balance_push(x)
 						break
 					else:
 						tmp = tmp.left
@@ -380,26 +373,64 @@ class RBTree(Tree):
 		if parent.color == "black" and brother.color == "black":
 			if ((l_nephew is None or l_nephew.color == "black") and
 				(r_nephew is None or r_nephew.color == "black"):
-				_swap_color(parent, brother)
+				self._swap_color(parent, brother)
 				if parent is not None and parent.parent.left is parent:
 					direction = "left"
 				else:
 					direction = "right"
 				self._balance_pop(parent.parent, direction)
 			elif (not right) and (r_nephew is not None) and (r_nephew.color == "red"):
-				_left_rotation(brother)
-				_swap_color(r_nephew)
+				self._left_rotation(brother)
+				self._swap_color(r_nephew)
+			elif right and (l_nephew is not None) and (l_nephew.color == "red"):
+				self._right_rotation(brother)
+				self._swap_color(l_nephew)
+			elif (not right) and (r_nephew is None) and (l_nephew.color == "red"):
+				self._right_rotation(l_nephew)
+				self._swap_color(l_nephew, brother)
+				self._balance_pop(parent, direction)
+			elif right and (l_nephew is None) and (r_nephew.color = "red"):
+				self._left_rotation(r_nephew)
+				self._swap_color(r_nephew, brother)
+				self._balance_pop(parent, direction)
+		elif parent.color == "black" and brother.color == "red":
+			if right:
+				self._right_rotation(brother)
+				self._swap_color(parent, brother)
+				self._balance_pop(parent, direction)
+			else:
+				self._left_rotation(brother)
+				self._swap_color(parent, brother)
+				self._balance_pop(parent, direction)
+		elif parent.color == "red" and brother.color == "black":
+			if ((l_nephew is None or l_nephew.color == "black") and
+				(r_nephew is None or r_nephew.color == "black")):
+				self._swap_color(parent, brother)
+			elif (not right) and (r_nephew is not None) and (r_nephew.color == "red"):
+				self._left_rotation(brother)
+				self._swap_color(parent, brother, r_nephew)
+			elif right and (l_nephew is not None) and (l_nephew.color == "red"):
+				self._right_rotation(brother)
+				self._swap_color(parent, brother, l_nephew)
+			elif (not right) and (r_nephew is None) and (l_nephew.color == "red"):
+				self._right_rotation(l_nephew)
+				self._swap_color(brother, l_nephew)
+				self._balance_pop(parent, direction)
+			elif right and (l_nephew is None) and (r_nephew.color == "red"):
+				self._left_rotation(r_nephew)
+				self._swap_color(brother, r_nephew)
+				self._balance_pop(parent, direction)
 
 
-	def _left_rotation():
+	def _left_rotation(self):
 		pass
 
 
-	def _right_rotation():
+	def _right_rotation(self):
 		pass
 
 
-	def _swap_color(*args):
+	def _swap_color(self, *args):
 		for vert in args:
 			vert.swap()
 
