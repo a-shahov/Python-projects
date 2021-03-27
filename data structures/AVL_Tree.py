@@ -50,12 +50,10 @@ class Tree:
 	def __str__(self):
 		if self.root is None:
 			return "Tree is empty!"
-		tmp = self.root
-		return self._BFS(tmp)
+		return self._BFS(self.root)
 
 
 	def _BFS(self, tmp, string="", depth=0):
-		tmp._depth = depth
 		flag = True
 		for first, child in (True, tmp.right), (False, tmp.left):
 			if child is not None:

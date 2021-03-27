@@ -9,6 +9,10 @@ class Node:
 	
 	def __str__(self):
 		return str((self.key, self.value))
+
+
+	def __repr__(self):
+		return str((self.key, self.value))
 	
 	
 	def copy(self, obj):
@@ -23,7 +27,7 @@ class RedBlackNode(Node):
 
 
 	def __str__(self):
-		return str((self.key,self.color))
+		return str((self.key, self.value, self.color))
 	
 	
 	def copy(self, obj):
@@ -55,12 +59,10 @@ class Tree:
 	def __str__(self):
 		if self.root is None:
 			return "Tree is empty!"
-		tmp = self.root
-		return self._BFS(tmp)
+		return self._BFS(self.root)
 
 
 	def _BFS(self, tmp, string="", depth=0):
-		tmp._depth = depth
 		flag = True
 		for first, child in (True, tmp.right), (False, tmp.left):
 			if child is not None:
@@ -366,7 +368,7 @@ class RBTree(Tree):
 				elif grfather.right is father and father.left is node:
 					self._small_right_rotation(node)
 				elif grfather.left is father and father.left is node:
-					self._big_rigкht_rotation(node)
+					self._big_right_rotation(node)
 				elif grfather.right is father and father.right is node:
 					self._big_left_rotation(node)
 
@@ -502,19 +504,114 @@ class RBTree(Tree):
 			vert.swap()
 
 A = RBTree()
-
+A.push(5)
 A.push(10)
-A.push(11)
-A.push(12)
-A.push(13)
-A.push(14)
-A.push(15)
-A.push(16)
-A.push(17)
-A.push(18)
-A.push(19)
-A.push(20)
-A.push(21)
 print(A)
-A.pop(10)
+A.pop(5)
 print(A)
+
+if __name__ == "__main_":
+	from random import randint
+	
+	
+	class Test:
+		def __init__(self, cls):
+			self.wrapper = cls()
+			self.check_sheet = {"test"}
+
+
+		def __str__(self):
+			return str(self.wrapper)
+
+
+		def __getattr__(self, name):
+			if name in self.check_sheet:
+				self.__inspection()
+			else:
+				return getattr(self.wrapper, name)
+	
+	
+		def __verif(self, leaf):
+			if leaf.color == "black" and leaf.parent is not None:
+				if (leaf.parent.left is None) or (leaf.parent.right is None):
+					return False
+				return True
+			elif leaf.color == "red" and leaf is self.wrapper.root:
+				return False
+			return True
+
+
+		def __measuring(self, leaf):
+			h = 0
+			while True:
+				if leaf.color == "black":
+					h += 1
+				if leaf.parent is None:
+					return h
+				else:
+					leaf = leaf.parent
+
+
+		def __inspection(self):
+			leaves = set()
+			h = -1
+			if self.wrapper.root is not None:
+				self.__BFS(self.wrapper.root, leaves)
+				for leaf in leaves:
+					if not self.__verif(leaf):
+						print(self.wrapper)
+						raise Warning(str(leaf))
+					if h == -1:
+						h = self.__measuring(leaf)
+					elif h != self.__measuring(leaf):
+						print(self.wrapper)
+						raise Warning(str(leaf))
+	
+	
+		def __BFS(self, tmp, leaves):
+			for child in tmp.right, tmp.left:
+				if child is not None:
+					self.__BFS(child, leaves)
+					if tmp.right is None and tmp.left is None:
+						leaves.add(tmp)
+				else:
+					if tmp.right is None and tmp.left is None:
+						leaves.add(tmp)
+	
+	
+	def loop(obj, N):
+		mass = set()
+		for i in range(N):
+			x = randint(0, 10 * N)
+			while x in mass:
+				x = randint(0, 10 * N)
+			mass.add(x)
+			print("Add an item:", x)
+			obj.push(x)
+			print("Starting to test the tree...")
+			obj.test
+			print("test is successful!")
+			x = mass.pop()
+			mass.add(x)
+			print("Starting to delete an item:", x)
+			obj.pop(x)
+			print("Starting to test the tree...")
+			obj.test
+			print("test is successful!")
+			print("Add an item:", x)
+			obj.push(x)
+			print("Starting to test the tree...")
+			obj.test
+			print("test is successful!")
+		for i in range(N):
+			x = mass.pop()
+			print("Starting to delete an item:", x)
+			obj.pop(x)
+			print("Starting to test the tree...")
+			obj.test
+			print("test is successful!")
+	
+	
+	A = Test(RBTree)
+	loop(A, 100)
+	
