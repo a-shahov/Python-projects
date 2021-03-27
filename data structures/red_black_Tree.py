@@ -30,9 +30,11 @@ class RedBlackNode(Node):
 		return str((self.key, self.value, self.color))
 	
 	
-	def copy(self, obj):
+	def copy(self, tree, obj):
 		Node.copy(self, obj)
 		self.color = obj.color
+		if self is tree.root:
+			self.color = "black"
 	
 	
 	def swap(self):
@@ -215,8 +217,8 @@ class Tree:
 				self._balance_pop(parent, direction)
 		elif tmp.right is None:
 			tmp_max = self._get_max(tmp.left)
+			tmp.copy(self, tmp_max)
 			parent, direction = self._check(tmp_max)
-			tmp.copy(tmp_max)
 			if tmp_max.parent.left is tmp_max:
 				tmp_max.parent.left = tmp_max.left
 				if tmp_max.left is not None:
@@ -228,8 +230,8 @@ class Tree:
 			self._balance_pop(parent, direction)
 		else:
 			tmp_min = self._get_min(tmp.right)
+			tmp.copy(self, tmp_min)
 			parent, direction = self._check(tmp_min)
-			tmp.copy(tmp_min)
 			if tmp_min.parent.left is tmp_min:
 				tmp_min.parent.left = tmp_min.right
 				if tmp_min.right is not None:
@@ -502,15 +504,15 @@ class RBTree(Tree):
 	def _swap_color(self, *args):
 		for vert in args:
 			vert.swap()
-
+"""
 A = RBTree()
 A.push(5)
 A.push(10)
 print(A)
 A.pop(5)
 print(A)
-
-if __name__ == "__main_":
+"""
+if __name__ == "__main__":
 	from random import randint
 	
 	
