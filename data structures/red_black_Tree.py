@@ -30,13 +30,6 @@ class RedBlackNode(Node):
 		return str((self.key, self.value, self.color))
 	
 	
-	def copy(self, tree, obj):
-		Node.copy(self, obj)
-		self.color = obj.color
-		if self is tree.root:
-			self.color = "black"
-	
-	
 	def swap(self):
 		if self.color == "black":
 			self.color = "red"
@@ -217,7 +210,7 @@ class Tree:
 				self._balance_pop(parent, direction)
 		elif tmp.right is None:
 			tmp_max = self._get_max(tmp.left)
-			tmp.copy(self, tmp_max)
+			tmp.copy(tmp_max)
 			parent, direction = self._check(tmp_max)
 			if tmp_max.parent.left is tmp_max:
 				tmp_max.parent.left = tmp_max.left
@@ -230,7 +223,7 @@ class Tree:
 			self._balance_pop(parent, direction)
 		else:
 			tmp_min = self._get_min(tmp.right)
-			tmp.copy(self, tmp_min)
+			tmp.copy(tmp_min)
 			parent, direction = self._check(tmp_min)
 			if tmp_min.parent.left is tmp_min:
 				tmp_min.parent.left = tmp_min.right
@@ -279,7 +272,7 @@ class RBTree(Tree):
 		father.parent = grfather.parent
 		if grfather.parent is not None:
 			if grfather.parent.left is grfather:
-				grfather.parent.left = fatherr
+				grfather.parent.left = father
 			else:
 				grfather.parent.right = father
 		grfather.parent = father
@@ -409,7 +402,7 @@ class RBTree(Tree):
 			if ((l_nephew is None or l_nephew.color == "black") and
 					(r_nephew is None or r_nephew.color == "black")):
 				self._swap_color(brother)
-				if parent is not None and parent.parent.left is parent:
+				if parent.parent is not None and parent.parent.left is parent:
 					direction = "left"
 				else:
 					direction = "right"
@@ -420,14 +413,15 @@ class RBTree(Tree):
 			elif right and (l_nephew is not None) and (l_nephew.color == "red"):
 				self._right_rotation(brother)
 				self._swap_color(l_nephew)
-			elif (not right) and (r_nephew is None) and (l_nephew.color == "red"):
+			elif (not right) and (r_nephew is None or r_nephew.color == "black") and (l_nephew.color == "red"):
 				self._right_rotation(l_nephew)
 				self._swap_color(l_nephew, brother)
 				self._balance_pop(parent, direction)
-			elif right and (l_nephew is None) and (r_nephew.color == "red"):
+			elif right and (l_nephew is None or l_nephew.color == "black") and (r_nephew.color == "red"):
 				self._left_rotation(r_nephew)
 				self._swap_color(r_nephew, brother)
 				self._balance_pop(parent, direction)
+			
 		elif parent.color == "black" and brother.color == "red":
 			if right:
 				self._right_rotation(brother)
@@ -447,11 +441,11 @@ class RBTree(Tree):
 			elif right and (l_nephew is not None) and (l_nephew.color == "red"):
 				self._right_rotation(brother)
 				self._swap_color(parent, brother, l_nephew)
-			elif (not right) and (r_nephew is None) and (l_nephew.color == "red"):
+			elif (not right) and (r_nephew is None or r_nephew.color == "black") and (l_nephew.color == "red"):
 				self._right_rotation(l_nephew)
 				self._swap_color(brother, l_nephew)
 				self._balance_pop(parent, direction)
-			elif right and (l_nephew is None) and (r_nephew.color == "red"):
+			elif right and (l_nephew is None or l_nephew.color == "black") and (r_nephew.color == "red"):
 				self._left_rotation(r_nephew)
 				self._swap_color(brother, r_nephew)
 				self._balance_pop(parent, direction)
@@ -504,116 +498,114 @@ class RBTree(Tree):
 	def _swap_color(self, *args):
 		for vert in args:
 			vert.swap()
-"""
-A = RBTree()
-A.push(5)
-A.push(10)
-print(A)
-A.pop(5)
-print(A)
-"""
+
+
 if __name__ == "__main__":
 	from random import randint
 	
 	
-	class Test:
-		def __init__(self, cls):
-			self.wrapper = cls()
-			self.check_sheet = {"test"}
+	def control_function(cls, N):
+		class Test:
+			def __init__(self, cls):
+				self.__wrapper = cls()
+				self.__check_sheet = {"test"}
+				self.__control_sheet = {"push", "pop"}
+				self.__old_wrap = "Tree is empty"
 
 
-		def __str__(self):
-			return str(self.wrapper)
+			def __str__(self):
+				return str(self.__wrapper)
 
 
-		def __getattr__(self, name):
-			if name in self.check_sheet:
-				self.__inspection()
-			else:
-				return getattr(self.wrapper, name)
+			def __getattr__(self, name):
+				if name in self.__check_sheet:
+					self.__inspection()
+				elif name in self.__control_sheet:
+					self.__old_wrap = str(self.__wrapper)
+					return getattr(self.__wrapper, name)
+				else:
+					return getattr(self.__wrapper, name)
 	
 	
-		def __verif(self, leaf):
-			if leaf.color == "black" and leaf.parent is not None:
-				if (leaf.parent.left is None) or (leaf.parent.right is None):
+			def __verif(self, leaf):
+				if leaf.color == "black" and leaf.parent is not None:
+					if (leaf.parent.left is None) or (leaf.parent.right is None):
+						return False
+					return True
+				elif leaf.color == "red" and leaf is self.__wrapper.root:
 					return False
 				return True
-			elif leaf.color == "red" and leaf is self.wrapper.root:
-				return False
-			return True
 
 
-		def __measuring(self, leaf):
-			h = 0
-			while True:
-				if leaf.color == "black":
-					h += 1
-				if leaf.parent is None:
-					return h
-				else:
-					leaf = leaf.parent
+			def __measuring(self, leaf):
+				h = 0
+				while True:
+					if leaf.color == "black":
+						h += 1
+					if leaf.parent is None:
+						return h
+					else:
+						leaf = leaf.parent
 
 
-		def __inspection(self):
-			leaves = set()
-			h = -1
-			if self.wrapper.root is not None:
-				self.__BFS(self.wrapper.root, leaves)
-				for leaf in leaves:
-					if not self.__verif(leaf):
-						print(self.wrapper)
-						raise Warning(str(leaf))
-					if h == -1:
-						h = self.__measuring(leaf)
-					elif h != self.__measuring(leaf):
-						print(self.wrapper)
-						raise Warning(str(leaf))
+			def __inspection(self):
+				leaves = set()
+				h = -1
+				if self.__wrapper.root is not None:
+					self.__BFS(self.__wrapper.root, leaves)
+					for leaf in leaves:
+						if not self.__verif(leaf):
+							print(self.__old_wrap)
+							print(self.__wrapper)
+							raise Warning(str(leaf), "problem with parent")
+						if h == -1:
+							h = self.__measuring(leaf)
+						elif h != self.__measuring(leaf):
+							print(self.__old_wrap)
+							print(self.__wrapper)
+							raise Warning(str(leaf), "problem with height")
 	
 	
-		def __BFS(self, tmp, leaves):
-			for child in tmp.right, tmp.left:
-				if child is not None:
-					self.__BFS(child, leaves)
-					if tmp.right is None and tmp.left is None:
-						leaves.add(tmp)
-				else:
-					if tmp.right is None and tmp.left is None:
-						leaves.add(tmp)
+			def __BFS(self, tmp, leaves):
+				for child in tmp.right, tmp.left:
+					if child is not None:
+						self.__BFS(child, leaves)
+						if tmp.right is None and tmp.left is None:
+							leaves.add(tmp)
+					else:
+						if tmp.right is None and tmp.left is None:
+							leaves.add(tmp)
 	
 	
-	def loop(obj, N):
-		mass = set()
-		for i in range(N):
-			x = randint(0, 10 * N)
-			while x in mass:
+		def loop(obj, N):
+			mass = set()
+			for i in range(N):
 				x = randint(0, 10 * N)
-			mass.add(x)
-			print("Add an item:", x)
-			obj.push(x)
-			print("Starting to test the tree...")
-			obj.test
-			print("test is successful!")
-			x = mass.pop()
-			mass.add(x)
-			print("Starting to delete an item:", x)
-			obj.pop(x)
-			print("Starting to test the tree...")
-			obj.test
-			print("test is successful!")
-			print("Add an item:", x)
-			obj.push(x)
-			print("Starting to test the tree...")
-			obj.test
-			print("test is successful!")
-		for i in range(N):
-			x = mass.pop()
-			print("Starting to delete an item:", x)
-			obj.pop(x)
-			print("Starting to test the tree...")
-			obj.test
-			print("test is successful!")
+				while x in mass:
+					x = randint(0, 10 * N)
+				mass.add(x)
+				print("Add an item:", x)
+				obj.push(x)
+				obj.test
+				x = mass.pop()
+				mass.add(x)
+				print("Starting to delete an item:", x)
+				obj.pop(x)
+				obj.test
+				print("Add an item:", x)
+				obj.push(x)
+				obj.test
+			print("test 1 is successful!")
+			print(obj)
+			for i in range(N):
+				x = mass.pop()
+				print("Starting to delete an item:", x)
+				obj.pop(x)
+				obj.test
+			print("test 2 is successful!")
+
+
+		loop(Test(cls), N)
 	
 	
-	A = Test(RBTree)
-	loop(A, 100)
-	
+	control_function(RBTree, 300)
