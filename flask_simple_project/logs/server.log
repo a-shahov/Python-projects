@@ -1,0 +1,49 @@
+2023-01-28 23:20:59,651 INFO: test server [in /home/andrey/python_projects/my_microblog/app/__init__.py:54]
+2023-01-28 23:22:37,607 ERROR: Exception on /register [POST] [in /home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py:1741]
+Traceback (most recent call last):
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/andrey/python_projects/my_microblog/app/routes.py", line 76, in register
+    if form.validate_on_submit():
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask_wtf/form.py", line 86, in validate_on_submit
+    return self.is_submitted() and self.validate(extra_validators=extra_validators)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/form.py", line 329, in validate
+    return super().validate(extra)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/form.py", line 146, in validate
+    if not field.validate(self, extra):
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/fields/core.py", line 242, in validate
+    stop_validation = self._run_validation_chain(form, chain)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/fields/core.py", line 262, in _run_validation_chain
+    validator(form, self)
+TypeError: RegistrationForm.validate_username() takes 1 positional argument but 2 were given
+2023-01-28 23:24:05,254 ERROR: Exception on /register [POST] [in /home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py:1741]
+Traceback (most recent call last):
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask/app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/andrey/python_projects/my_microblog/app/routes.py", line 76, in register
+    if form.validate_on_submit():
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/flask_wtf/form.py", line 86, in validate_on_submit
+    return self.is_submitted() and self.validate(extra_validators=extra_validators)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/form.py", line 329, in validate
+    return super().validate(extra)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/form.py", line 146, in validate
+    if not field.validate(self, extra):
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/fields/core.py", line 242, in validate
+    stop_validation = self._run_validation_chain(form, chain)
+  File "/home/andrey/python_projects/my_microblog/venv/lib/python3.10/site-packages/wtforms/fields/core.py", line 262, in _run_validation_chain
+    validator(form, self)
+TypeError: RegistrationForm.validate_username() takes 1 positional argument but 2 were given
+2023-01-28 23:24:40,781 INFO: test server [in /home/andrey/python_projects/my_microblog/app/__init__.py:54]
+2023-02-01 15:53:31,269 INFO: test server [in /home/andrey/python_projects/my_microblog/app/__init__.py:54]
